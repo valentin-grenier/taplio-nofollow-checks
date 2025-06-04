@@ -20,14 +20,13 @@ class Taplio_Admin
     # Register the admin page
     public function register_admin_page()
     {
-        add_menu_page(
-            __('Taplio Nofollow Checks', 'wp-plugin-boilerplate'),
-            __('Taplio Nofollow Checks', 'wp-plugin-boilerplate'),
+        add_management_page(
+            __('Nofollow Checks', 'taplio-nofollow-checks'),
+            __('Nofollow Checks', 'taplio-nofollow-checks'),
             'manage_options',
-            'taplio-nofollow-checks',
+            self::ADMIN_PAGE_SLUG,
             [$this, 'render_admin_page'],
-            'dashicons-admin-generic',
-            20
+
         );
     }
 
@@ -97,7 +96,7 @@ class Taplio_Admin
         $content_processor = new Taplio_Content_Processor($domain_manager);
 
         if (empty($domains)) {
-            wp_safe_redirect(admin_url('admin.php?page=' . self::ADMIN_PAGE_SLUG . '&updated=false&error=no_domains'));
+            wp_safe_redirect(admin_url('tools.php?page=' . self::ADMIN_PAGE_SLUG . '&updated=false&error=no_domains'));
         }
 
         $posts = get_posts([
@@ -120,7 +119,7 @@ class Taplio_Admin
             }
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=' . self::ADMIN_PAGE_SLUG . '&bulk=1'));
+        wp_safe_redirect(admin_url('tools.php?page=' . self::ADMIN_PAGE_SLUG . '&bulk=1'));
         exit;
     }
 }

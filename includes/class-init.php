@@ -18,19 +18,19 @@ class Taplio_Init
     public function load_plugin_public_assets()
     {
         # CSS
-        wp_enqueue_style('wp-plugin-boilerplate-public-styles', TAPLIO_URL . 'assets/css/public.css', array(), '1.0.0', 'all');
+        wp_enqueue_style('taplio-nofollow-checks-public-styles', TAPLIO_URL . 'assets/css/public.css', array(), '1.0.0', 'all');
 
         # JS
-        wp_enqueue_script('wp-plugin-boilerplate-public-scripts', TAPLIO_URL . 'assets/js/public/app.js', array(), '1.0.0', true);
+        wp_enqueue_script('taplio-nofollow-checks-public-scripts', TAPLIO_URL . 'assets/js/public/app.js', array(), '1.0.0', true);
     }
 
     # Load admin scripts
     public function load_plugin_admin_assets()
     {
         # CSS
-        wp_enqueue_style('wp-plugin-boilerplate-admin-styles', TAPLIO_URL . 'assets/css/admin.css', array(), '1.0.0', 'all');
+        wp_enqueue_style('taplio-nofollow-checks-admin-styles', TAPLIO_URL . 'assets/css/admin.css', array(), '1.0.0', 'all');
 
         # JS
-        wp_enqueue_script('wp-plugin-boilerplate-admin-scripts', TAPLIO_URL . 'assets/js/admin/app.js', array(), '1.0.0', true);
+        wp_enqueue_script('taplio-nofollow-checks-admin-scripts', TAPLIO_URL . 'assets/js/admin/app.js', array(), '1.0.0', true);
     }
 }
