@@ -45,7 +45,7 @@ class Taplio_Content_Processor
     }
 
     # Add nofollow to links in the content
-    private function add_nofollow($content, $domains)
+    public function add_nofollow($content, $domains)
     {
         return preg_replace_callback(
             '#<a\s[^>]*href=["\'](https?://[^"\']+)["\'][^>]*>#i',

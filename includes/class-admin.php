@@ -14,6 +14,7 @@ class Taplio_Admin
     {
         add_action('admin_menu', [$this, 'register_admin_page']);
         add_action('admin_post_taplio_update_domains', [$this, 'handle_form_submit']);
+        add_action('admin_post_taplio_process_all', [$this, 'handle_process_all']);
     }
 
     # Register the admin page
@@ -41,6 +42,7 @@ class Taplio_Admin
             'domains'     => $domains_manager->get_domains(),
             'is_writable' => $domains_manager->is_writable(),
             'updated'     => isset($_GET['updated']) && $_GET['updated'] === 'true',
+            'bulk'        => isset($_GET['bulk']) && $_GET['bulk'] === '1',
         ];
 
         if (file_exists($view_file)) {
@@ -79,6 +81,46 @@ class Taplio_Admin
         $domains_manager->save_domains($domains);
 
         wp_safe_redirect(admin_url('admin.php?page=' . self::ADMIN_PAGE_SLUG . '&updated=true'));
+        exit;
+    }
+
+    # Process all posts handler
+    public function handle_process_all()
+    {
+        if (
+            !current_user_can('manage_options') || !check_admin_referer('taplio_process_all')
+        ) {
+            wp_die(__('Unauthorized request', 'taplio-nofollow-checks'));
+        }
+
+        $domain_manager    = new Taplio_Domain_Manager(JSON_FILE);
+        $content_processor = new Taplio_Content_Processor($domain_manager);
+
+        if (empty($domains)) {
+            wp_safe_redirect(admin_url('admin.php?page=' . self::ADMIN_PAGE_SLUG . '&updated=false&error=no_domains'));
+        }
+
+        $posts = get_posts([
+            'post_type'   => 'post',
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+            'fields'      => 'ids',
+        ]);
+
+        foreach ($posts as $post_id) {
+            $post = get_post($post_id);
+            $original = $post->post_content;
+            $updated  = $content_processor->add_nofollow($original, $domain_manager->get_domains());
+
+            if ($original !== $updated) {
+                wp_update_post([
+                    'ID'           => $post_id,
+                    'post_content' => $updated,
+                ]);
+            }
+        }
+
+        wp_safe_redirect(admin_url('admin.php?page=' . self::ADMIN_PAGE_SLUG . '&bulk=1'));
         exit;
     }
 }
