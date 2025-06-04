@@ -6,7 +6,7 @@
  * This class initializes the plugin by loading the necessary classes and registering the custom post type and fields.
  */
 
-class Plugin_Init
+class Taplio_Init
 {
     public function __construct()
     {
@@ -18,19 +18,19 @@ class Plugin_Init
     public function load_plugin_public_assets()
     {
         # CSS
-        wp_enqueue_style('wp-plugin-boilerplate-public-styles', PLUGIN_URL . 'assets/css/public.css', array(), '1.0.0', 'all');
+        wp_enqueue_style('wp-plugin-boilerplate-public-styles', TAPLIO_URL . 'assets/css/public.css', array(), '1.0.0', 'all');
 
         # JS
-        wp_enqueue_script('wp-plugin-boilerplate-public-scripts', PLUGIN_URL . 'assets/js/public/app.js', array(), '1.0.0', true);
+        wp_enqueue_script('wp-plugin-boilerplate-public-scripts', TAPLIO_URL . 'assets/js/public/app.js', array(), '1.0.0', true);
     }
 
     # Load admin scripts
     public function load_plugin_admin_assets()
     {
         # CSS
-        wp_enqueue_style('wp-plugin-boilerplate-admin-styles', PLUGIN_URL . 'assets/css/admin.css', array(), '1.0.0', 'all');
+        wp_enqueue_style('wp-plugin-boilerplate-admin-styles', TAPLIO_URL . 'assets/css/admin.css', array(), '1.0.0', 'all');
 
         # JS
-        wp_enqueue_script('wp-plugin-boilerplate-admin-scripts', PLUGIN_URL . 'assets/js/admin/app.js', array(), '1.0.0', true);
+        wp_enqueue_script('wp-plugin-boilerplate-admin-scripts', TAPLIO_URL . 'assets/js/admin/app.js', array(), '1.0.0', true);
     }
 }

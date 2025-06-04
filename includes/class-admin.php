@@ -6,7 +6,7 @@
  * This class handles the admin functionality of the plugin, including registering custom post types and fields.
  */
 
-class Plugin_Admin
+class Taplio_Admin
 {
     public function __construct()
     {
@@ -17,8 +17,8 @@ class Plugin_Admin
     public function register_admin_page()
     {
         add_menu_page(
-            __('WP Plugin Boilerplate', 'wp-plugin-boilerplate'),
-            __('WP Plugin Boilerplate', 'wp-plugin-boilerplate'),
+            __('Taplio Nofollow Checks', 'wp-plugin-boilerplate'),
+            __('Taplio Nofollow Checks', 'wp-plugin-boilerplate'),
             'manage_options',
             'plugin-admin',
             [$this, 'render_admin_page'],
@@ -31,9 +31,8 @@ class Plugin_Admin
     public function render_admin_page()
     {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('WP Plugin Boilerplate Admin Page', 'wp-plugin-boilerplate') . '</h1>';
-        echo '<p>' . esc_html__('Welcome to the WP Plugin Boilerplate admin page!', 'wp-plugin-boilerplate') . '</p>';
-        // Add your admin page content here
+        echo '<h1>' . esc_html__('Taplio Nofollow Checks Admin Page', 'taplio-nofollow-checks') . '</h1>';
+        echo '<p>' . esc_html__('Welcome to the Taplio Nofollow Checks admin page!', 'taplio-nofollow-checks') . '</p>';
         echo '</div>';
     }
 }
