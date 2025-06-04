@@ -8,9 +8,12 @@
 
 class Taplio_Admin
 {
+    const ADMIN_PAGE_SLUG = 'taplio-nofollow-checks';
+
     public function __construct()
     {
         add_action('admin_menu', [$this, 'register_admin_page']);
+        add_action('admin_post_taplio_update_domains', [$this, 'handle_form_submit']);
     }
 
     # Register the admin page
@@ -20,7 +23,7 @@ class Taplio_Admin
             __('Taplio Nofollow Checks', 'wp-plugin-boilerplate'),
             __('Taplio Nofollow Checks', 'wp-plugin-boilerplate'),
             'manage_options',
-            'plugin-admin',
+            'taplio-nofollow-checks',
             [$this, 'render_admin_page'],
             'dashicons-admin-generic',
             20
@@ -30,9 +33,52 @@ class Taplio_Admin
     # Render the admin page
     public function render_admin_page()
     {
-        echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Taplio Nofollow Checks Admin Page', 'taplio-nofollow-checks') . '</h1>';
-        echo '<p>' . esc_html__('Welcome to the Taplio Nofollow Checks admin page!', 'taplio-nofollow-checks') . '</p>';
-        echo '</div>';
+        $view_file = TAPLIO_DIR . 'admin/views/page-nofollow-domains.php';
+
+        $domains_manager = new Taplio_Domain_Manager(JSON_FILE);
+
+        $args = [
+            'domains'     => $domains_manager->get_domains(),
+            'is_writable' => $domains_manager->is_writable(),
+            'updated'     => isset($_GET['updated']) && $_GET['updated'] === 'true',
+        ];
+
+        if (file_exists($view_file)) {
+            include $view_file;
+        } else {
+            wp_die(__('Admin file not found.', 'taplio-nofollow-checks'));
+        }
+    }
+
+    # Form submission handler
+    public function handle_form_submit()
+    {
+        if (
+            !current_user_can('manage_options') || !check_admin_referer('taplio_update_domains')
+        ) {
+            wp_die(__('Unauthorized request', 'taplio-nofollow-checks'));
+        }
+
+        # Validate and sanitize the input
+        $raw = $_POST['domains'] ?? '';
+        $lines = explode("\n", $raw);
+        $domains = [];
+
+        foreach ($lines as $line) {
+            $domain = trim($line);
+            $domain = str_replace(['http://', 'https://'], '', $domain);
+            $domain = sanitize_text_field($domain);
+            $domain = strtolower($domain);
+
+            if (! empty($domain)) {
+                $domains[] = $domain;
+            }
+        }
+
+        $domains_manager = new Taplio_Domain_Manager(JSON_FILE);
+        $domains_manager->save_domains($domains);
+
+        wp_safe_redirect(admin_url('admin.php?page=' . self::ADMIN_PAGE_SLUG . '&updated=true'));
+        exit;
     }
 }

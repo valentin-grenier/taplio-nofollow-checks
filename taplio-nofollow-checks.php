@@ -26,6 +26,11 @@ if (!defined('TAPLIO_URL')) {
     define('TAPLIO_URL', plugin_dir_url(__FILE__));
 }
 
+# JSON file path
+if (!defined('JSON_FILE')) {
+    define('JSON_FILE', TAPLIO_DIR . 'data/domains.json');
+}
+
 # Automatically require all PHP files in the includes directory
 foreach (glob(TAPLIO_DIR . 'includes/*.php') as $file) {
     require_once($file);
@@ -43,8 +48,20 @@ if (file_exists($autoload_path)) {
 # Initialize the plugin
 function taplio_init()
 {
+    # Init plugin assets
     new Taplio_Init();
-    new Taplio_Admin();
+
+    # Init hooks
+    $domain_manager    = new Taplio_Domain_Manager(JSON_FILE);
+    $content_processor = new Taplio_Content_Processor($domain_manager);
+
+    # Hook into save_post for post_content updates
+    add_action('save_post', [$content_processor, 'handle_post_save'], 10, 3);
+
+    # Load admin page if in admin area
+    if (is_admin()) {
+        new Taplio_Admin();
+    }
 }
 
 add_action('plugins_loaded', 'taplio_init');
