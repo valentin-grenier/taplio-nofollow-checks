@@ -10,18 +10,7 @@ class Taplio_Init
 {
     public function __construct()
     {
-        add_action('wp_enqueue_scripts', [$this, 'load_plugin_public_assets']);
         add_action('admin_enqueue_scripts', [$this, 'load_plugin_admin_assets']);
-    }
-
-    # Initialize plugin assets
-    public function load_plugin_public_assets()
-    {
-        # CSS
-        wp_enqueue_style('taplio-nofollow-checks-public-styles', TAPLIO_URL . 'assets/css/public.css', array(), '1.0.0', 'all');
-
-        # JS
-        wp_enqueue_script('taplio-nofollow-checks-public-scripts', TAPLIO_URL . 'assets/js/public/app.js', array(), '1.0.0', true);
     }
 
     # Load admin scripts
